@@ -2,6 +2,7 @@ import os
 import json
 import math
 import io
+import random
 from PIL import Image
 from tqdm.auto import tqdm
 from datasets import load_dataset
@@ -18,6 +19,8 @@ def bench_data_loader(args, image_placeholder="<image>"):
     # Data
     mrag_bench = load_dataset("uclanlp/MRAG-Bench", split="test")
     
+    rng = random.Random(args.shuffle_seed)
+
     for item in tqdm(mrag_bench):
         
         qs_id = item['id'] 
@@ -59,6 +62,15 @@ def bench_data_loader(args, image_placeholder="<image>"):
                 if scenario == 'Incomplete':
                     retrieved_images = [retrieved_images[0]]
                 image_files = [image] + retrieved_images
+                if args.shuffle_rag_order and len(image_files) > 1:
+                    base_image, retrieved = image_files[0], image_files[1:]
+                    rng.shuffle(retrieved)
+                    image_files = [base_image] + retrieved
+            else:
+                if args.shuffle_rag_order and len(image_files) > 1:
+                    base_image, rest = image_files[0], image_files[1:]
+                    rng.shuffle(rest)
+                    image_files = [base_image] + rest
     
         cur_prompt = args.extra_prompt + qs
 

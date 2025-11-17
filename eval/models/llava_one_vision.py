@@ -28,6 +28,9 @@ def eval_model(args):
     ans_file = open(args.answers_file, "w")
     
     # Load model
+    if args.seed is not None:
+        torch.manual_seed(args.seed)
+
     pretrained = "lmms-lab/llava-onevision-qwen2-7b-ov"
     model_name = "llava_qwen"
     device = "cuda"
@@ -104,8 +107,10 @@ if __name__ == "__main__":
     parser.add_argument("--answers-file", type=str, default="answer.jsonl")
     parser.add_argument("--use_rag", type=lambda x: x.lower() == 'true', default=False, help="Use RAG")
     parser.add_argument("--use_retrieved_examples", type=lambda x: x.lower() == 'true', default=False, help="Use retrieved examples")
+    parser.add_argument("--shuffle_rag_order", action="store_true", help="Shuffle retrieved/GT RAG images (keeps query image first)")
+    parser.add_argument("--shuffle_seed", type=int, default=0, help="Seed for RAG image shuffling")
+    parser.add_argument("--seed", type=int, default=None, help="Torch RNG seed for generation")
 
     args = parser.parse_args()
 
     eval_model(args)
-

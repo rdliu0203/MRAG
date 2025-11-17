@@ -1,0 +1,10 @@
+torch
+transformers
+llava
+datasets
+tqdm
+shortuuid
+Pillow
+numpy
+openai
+requests
