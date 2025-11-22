@@ -2,6 +2,7 @@
 # export HF_HOME="./cache"
 # export HF_HUB_CACHE="./cache"
 export CUDA_DEVICE_ORDER="PCI_BUS_ID"
+
 #export CUDA_VISIBLE_DEVICES=5
 
 python3 eval/models/llava_one_vision.py \
